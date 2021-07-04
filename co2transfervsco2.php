@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>AAPL Apple Inc. </title>
+        <title>CO2 Transfer & Emission</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.min.js" integrity="sha512-VCHVc5miKoln972iJPvkQrUYYq7XpxXzvqNfiul1H4aZDwGBGC0lq373KNleaB2LpnC2a/iNfE5zoRYmB4TRDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://d3js.org/d3.v7.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -28,19 +28,16 @@
               <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href="./co2.php">CO2</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Pricing</a>
+              <a class="nav-link" href="./co2transfervsco2.php">CO2 Transfer & Emission</a>
             </li>
           </ul>
         </div>
       </nav>
       <?php
-        $servername = "localhost";
-        $username = "root";
+        $servername = "db5003180798.hosting-data.io";
+        $username = "dbu1108833";
         $password = "onthedarksideIwalk1000miles";
-        $db = "co2outsourcing";
+        $db = "dbs2569377";
 
         // Create connection
         $conn = new mysqli($servername, $username, $password,$db);
@@ -52,14 +49,22 @@
           //echo "connn success";
         }
         //import data
-        $sql_us_co2 = "SELECT co2 from co2 where land='United States' and jahr>1989 order by jahr";
         $sql_us_jahr = "SELECT jahr from co2 where land='United States' and jahr>1989 order by jahr";
-        $res_us_co2 = $conn->query($sql_us_co2);
         $res_us_jahr = $conn->query($sql_us_jahr);
+
+        $sql_us_co2 = "SELECT co2 from co2 where land='United States' and jahr>1989 order by jahr";
+        $res_us_co2 = $conn->query($sql_us_co2);
         $sql_ger_co2 = "SELECT co2 from co2 where land='Germany' and jahr>1989 order by jahr";
         $res_ger_co2 = $conn->query($sql_ger_co2);
         $sql_chi_co2 = "SELECT co2 from co2 where land='China' and jahr>1989 order by jahr";
         $res_chi_co2 = $conn->query($sql_chi_co2);
+
+        $sql_us_co2transfer = "SELECT co2 from co2_transfer where land='United States' and jahr>1989 order by jahr";
+        $res_us_co2transfer = $conn->query($sql_us_co2transfer);
+        $sql_ger_co2transfer = "SELECT co2 from co2_transfer where land='Germany' and jahr>1989 order by jahr";
+        $res_ger_co2transfer = $conn->query($sql_ger_co2transfer);
+        $sql_chi_co2transfer = "SELECT co2 from co2_transfer where land='China' and jahr>1989 order by jahr";
+        $res_chi_co2transfer = $conn->query($sql_chi_co2transfer);
 
         //define pass functions for javascript
         function sqlecho($res){
@@ -81,9 +86,19 @@
         <div id="wrapper">
             <canvas id="chart"></canvas>
         <script>
+            // get co2
             var usCo2Data=<?php sqlecho($res_us_co2)?>;
             var gerCo2Data=<?php sqlecho($res_ger_co2)?>;
             var chiCo2Data=<?php sqlecho($res_chi_co2)?>;
+
+            // get co2 transfer
+            var usCo2transferData=<?php sqlecho($res_us_co2transfer)?>;
+            usCo2transferData = usCo2transferData.map(x => x * 3664000);
+            var gerCo2transferData=<?php sqlecho($res_ger_co2transfer)?>;
+            gerCo2transferData = gerCo2transferData.map(x => x * 3664000);
+            var chiCo2transferData=<?php sqlecho($res_chi_co2transfer)?>;
+            chiCo2transferData = chiCo2transferData.map(x => x * 3664000);
+
             var usJahrLabel=<?php sqlecho($res_us_jahr)?>;
                 //console.log(valueData);
             var chart = new Chart('chart', {
@@ -92,24 +107,50 @@
             labels: usJahrLabel,
             datasets: [
                 {
-                label: "USA",
+                label: "USA CO2 Emission",
                 data: usCo2Data,
                 fill: false,
                 borderColor: 'red'
                 },
                 {
-                label: "Germany",
+                label: "USA CO2 Transfer",
+                data: usCo2transferData,
+                fill: false,
+                borderColor: 'pink'
+                },
+                {
+                label: "Germany CO2 Emission",
                 data: gerCo2Data,
                 fill: false,
                 borderColor: 'blue'
                 },
                 {
-                label: "China",
+                label: "Germany CO2 Transfer",
+                data: gerCo2transferData,
+                fill: false,
+                borderColor: 'CornflowerBlue'
+                },
+                {
+                label: "China CO2 Emission",
                 data: chiCo2Data,
                 fill: false,
                 borderColor: 'black'
+                },
+                {
+                label: "China CO2 Transfer",
+                data: chiCo2transferData,
+                fill: false,
+                borderColor: 'gray'
                 }
             ]
+            },
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'CO2 transfer per year'
+                }
+              }
             }
             });
             //console.log(germany);
