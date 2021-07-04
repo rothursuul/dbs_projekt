@@ -34,10 +34,10 @@
         </div>
       </nav>
       <?php
-        $servername = "db5003180798.hosting-data.io";
-        $username = "dbu1108833";
-        $password = "onthedarksideIwalk1000miles";
-        $db = "dbs2569377";
+        $servername = "XXX";
+        $username = "XXX";
+        $password = "XXX";
+        $db = "XXX";
 
         // Create connection
         $conn = new mysqli($servername, $username, $password,$db);
