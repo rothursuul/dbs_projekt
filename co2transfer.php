@@ -27,6 +27,9 @@
             <li class="nav-item">
               <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./co2.php">CO2</a>
+            </li>
             <li class="nav-item active">
               <a class="nav-link" href="./co2transfervsco2.php">CO2 Transfer & Emission</a>
             </li>
@@ -75,6 +78,7 @@
           if ($res->num_rows > 0) {
             // output data of each row
             while($row = $res->fetch_assoc()) {
+              //if ($row["gdp"]){echo $row["gdp"].",";}
               if ($row["co2"]){echo $row["co2"].",";}
               if ($row["jahr"]){echo $row["jahr"].",";}
             }
